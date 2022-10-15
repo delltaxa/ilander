@@ -25,6 +25,6 @@ example:
 
 ![image](https://user-images.githubusercontent.com/114283067/195981021-e74a16f1-7ceb-441a-b4c9-c24ef7432c8f.png)
 
-iLander still uses ncat to connect to clients, but will be
+iLander still uses ncat to connect to clients, but that will be
 changed soon!
 

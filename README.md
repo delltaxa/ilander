@@ -28,3 +28,6 @@ example:
 iLander still uses ncat to connect to clients, but that will be
 changed soon!
 
+# Installation
+
+Command: git clone https://github.com/delltaxa/ilander.git && cd ilander && chmod +x ./install && ./install

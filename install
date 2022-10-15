@@ -8,3 +8,5 @@ sudo apt install ncat
 pip3 install colorama
 pip3 install datetime
 pip3 install IPy
+
+chmod +x ./ilander

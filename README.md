@@ -31,3 +31,7 @@ changed soon!
 # Installation
 
 Command: git clone https://github.com/delltaxa/ilander.git && cd ilander && chmod +x ./install && ./install
+
+# Bugs
+
+Please report any bugs on Github!

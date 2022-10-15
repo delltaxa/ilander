@@ -1,0 +1,208 @@
+#!/usr/bin/env python
+
+#######################
+## Github: @delltaxa ##
+## Insta:  @delltaxa ##
+#######################
+
+from ast import Break
+from operator import truediv
+
+
+try: 
+	#=-=-=-=-=-=- Public    -=-=-=-=-=-=#
+	
+	def localip():
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.connect(("8.8.8.8", 80))
+		ret = s.getsockname()[0]
+		s.close()
+		return ret
+	
+	def print_options():
+		print("""Options: 
+
+    default: clear/exit ==> clear or exit the Program
+    other:
+        use     [str(ip)]    ==> set ip to listen to (get incomming connections)
+                                 for (display command)
+        usep    [int(port)]  ==> set port to listen to
+        display [nA]         ==> wait for but don't accept incomming connections.
+        connect [nA/str(ip)] ==> wait for incomming connections and accept 
+		                         all(without arg) or accept specific(with arg)
+""")
+	
+	#=-=-=-=-=-=- Imports   -=-=-=-=-=-=#
+
+	import os
+	import socket
+	import datetime
+	from IPy import IP
+	from colorama import *
+
+	#=-=-=-=-=-=- Variables -=-=-=-=-=-=#
+
+	clave = "-" #=> Current slave
+	sip = localip()    #=> Server address
+	sp = 4444   #=> Server port
+	
+	#=-=-=-=-=-=- Classes -=-=-=-=-=-=-=#
+
+	class iPrint:
+		def event(msg):
+			print(f"{Fore.BLUE}[*] {Fore.WHITE}{msg}")
+		def info(msg):
+			print(f"{Fore.GREEN}[+] {Fore.WHITE}{msg}")
+		def error(msg):
+			print(f"{Fore.RED}[-] {Fore.WHITE}{msg}")
+
+
+	#=-=-=-=-=-=- Voids   -=-=-=-=-=-=-=#
+	
+	def getspaces(strin, lenin):
+		result = strin
+		while result.__len__() < lenin:
+			result += " "
+		return result
+
+	def clear():
+		os.system("clear")
+
+	def prompt():
+		return f"{Fore.BLUE}iLander{Fore.WHITE} {Fore.GREEN}[{Fore.YELLOW}{sip}{Fore.WHITE}_({Fore.YELLOW}{clave}{Fore.WHITE}){Fore.GREEN}>>{Fore.WHITE} ";
+
+	def display_cmd():
+		TCP_IP = sip
+		TCP_PORT = sp
+		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)         
+		server.bind((TCP_IP, TCP_PORT))
+		server.listen()
+            
+		print()
+		try:
+			print(f" {Fore.GREEN}   IPAddress     {Fore.WHITE}| {Fore.GREEN}     Date/Time{Fore.WHITE}")
+			print(f" ---------------------------------------")
+			while True:
+				conn, addr = server.accept()
+				ipaddr = addr[0]
+				datet = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+				print(f"  {Fore.BLUE}{getspaces(ipaddr, 15)}{Fore.WHITE} | {Fore.YELLOW}{datet}")
+				conn.close()
+
+		except KeyboardInterrupt:
+			print()
+			pass
+
+
+	def connect_cmd(cmdin):
+		connect_specific = True
+		if cmdin.lower().strip() == "connect":
+			connect_specific = False
+		
+		target = "anyone"
+		if connect_specific == True:
+			target = cmdin.strip()[7:].strip()
+		
+		iPrint.event(f"Waiting for {Fore.BLUE}{target}{Fore.WHITE} to connect")
+
+		payload = ""
+		if connect_specific:
+			payload = f"ncat -nlvp {sp} --allow {target}"
+		else:
+			payload = f"ncat -nlvp {sp}"
+
+		iPrint.event(f"Executing payload ({Fore.BLUE}{payload}{Fore.WHITE})\n")
+		os.system(payload)
+		
+
+	def use_cmd(cmd, cmdin):
+		if cmd == "usep":
+			port_with_stars = cmdin[4:].replace("*", "").strip()
+			global sp
+			try:
+				sp = int(port_with_stars)
+			except ValueError:
+				iPrint.error("Cannot convert str to int")
+		elif cmd == "use":
+			addr_with_stars = cmdin[4:].replace("*", "").strip()
+			global sip
+
+			try:
+				x = IP(addr_with_stars)
+				sip = str(addr_with_stars)
+			except ValueError:
+				iPrint.error("Input is not an valid IP")
+		elif cmd == "clear":
+			clear()
+		elif cmd == "exit":
+			exit()
+		elif cmd == "pesu":
+			iPrint.info(f"Running on Port {Fore.BLUE}{sp}{Fore.WHITE}")
+		elif cmd == "unknown":
+			if cmdin.strip().lower() != "":
+				iPrint.error("Command not found, use 'options' for help.")
+		elif cmd == "connect":
+			connect_cmd(cmdin)
+		elif cmd == "display":
+			display_cmd()
+		elif cmd == "options":
+			print_options()
+
+	def command_switcher(cmdin):
+		clean_cmdin = cmdin.strip().lower()
+		
+		if clean_cmdin == "display":
+			use_cmd("display", cmdin)
+		elif clean_cmdin == "clear":
+			use_cmd("clear", cmdin)
+		elif clean_cmdin == "options":
+			use_cmd("options", cmdin)
+		elif clean_cmdin == "exit":
+			use_cmd("exit", cmdin)
+		elif clean_cmdin == "pesu":
+			use_cmd("pesu", cmdin)
+		elif clean_cmdin.startswith("usep"):
+			use_cmd("usep", cmdin)
+		elif clean_cmdin.startswith("use"):
+			use_cmd("use", cmdin)
+		elif clean_cmdin.startswith("connect"):
+			use_cmd("connect", cmdin)
+		else:
+			use_cmd("unknown", cmdin)
+	
+	def shell():
+		while True:
+			uinp = input(prompt())
+			command_switcher(uinp)
+
+
+	def ascii_art():
+		print(f"""{Fore.CYAN}
+ _ _                     _           
+(_) |                   | |          
+ _| |     __ _ _ __   __| | ___ _ __ 
+| | |    / _` | '_ \ / _` |/ _ \ '__|
+| | |___| (_| | | | | (_| |  __/ |   
+|_|______\__,_|_| |_|\__,_|\___|_|   {Fore.WHITE}
+
++-=[ Running {Fore.BLUE}iLander{Fore.WHITE} on {Fore.YELLOW}v1.0.0.0{Fore.WHITE} ]=-+
++-=[     Manage you're slaves    ]=-+
+	""")
+
+	def initialize():
+		print(f"{Fore.WHITE}", end='')
+		ascii_art()
+		shell()
+
+	def main():
+		initialize()
+		# iPrint.event("this is an event")
+		# iPrint.info("this is an info")
+		# iPrint.error("this is an error")
+
+	if __name__ == "__main__":
+		main()
+except KeyboardInterrupt:
+	print('\n')
+	iPrint.error("Exiting!")

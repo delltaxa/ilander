@@ -3,12 +3,12 @@
 Hello, I'm learning python and I was bored so I've created an
 reverse-shell Manager called 'iLander'
 
--------------------- What is it ------------------------------
+# What is it
 
 iLander is a tool which you can use to Manage multiple shells
 (not at once (but will be added soon))
 
--------------------- What can you do -------------------------
+# What can you do
 
 you can scan (display) all the incomming connections via the
 display command.
